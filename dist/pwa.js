@@ -45,7 +45,7 @@ function showInstructions() {
   document.querySelector('#install-instructions').textContent = ios
     ? 'Open this page in your browser, tap Share, then Add to Home Screen. Turn on Open as Web App if that option appears.'
     : macSafari
-      ? 'In Safari, choose File → Add to Dock. PNG Tuck will open in its own app window.'
+      ? 'In Safari, choose File → Add to Dock. PocketCompress will open in its own app window.'
       : 'Open this page in Chrome or Edge and use the Install app option in the address bar or browser menu. On a Mac, Safari also offers File → Add to Dock.';
   dialog.showModal();
 }

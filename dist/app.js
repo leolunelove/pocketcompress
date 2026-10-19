@@ -191,7 +191,7 @@ $('#download-all').addEventListener('click',async()=>{
       used.add(name);zip.file(name,item.blob);
     }
     const blob=await zip.generateAsync({type:'blob',compression:'STORE'}),url=URL.createObjectURL(blob);
-    const a=make('a');a.href=url;a.download='png-tuck.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+    const a=make('a');a.href=url;a.download='pocketcompress.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
   }catch{notify('The ZIP could not be created. You can still download each image individually.');}
   finally{button.disabled=false;}
 });

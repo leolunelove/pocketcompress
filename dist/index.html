@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f5f2">
+  <meta name="theme-color" content="#f7f5f2">
   <meta name="description" content="Losslessly compress PNGs without changing a single pixel. A simple, private image tool that works entirely on your device.">
-  <title>PNG Tuck — less file, same image</title>
+  <title>PocketCompress — less file, same image</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
-  <meta name="apple-mobile-web-app-title" content="PNG Tuck">
+  <meta name="apple-mobile-web-app-title" content="PocketCompress">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23fff9e7'/%3E%3Cpath d='M0 7a7 7 0 0 1 7-7h18a7 7 0 0 1 7 7v3H0' fill='%23edbb34'/%3E%3Cpath d='M7 17h18M7 23h13' stroke='%23b6aa8c' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./style.css">
   <script defer src="./vendor/jszip.min.js"></script>
@@ -16,7 +16,7 @@
 </head>
 <body>
   <header class="toolbar">
-    <a class="brand" href="./" aria-label="PNG Tuck home"><span class="note-icon" aria-hidden="true"><i></i><i></i><i></i></span><span>PNG Tuck</span></a>
+    <a class="brand" href="./" aria-label="PocketCompress home"><span class="note-icon" aria-hidden="true"><i></i><i></i><i></i></span><span>PocketCompress</span></a>
   </header>
   <main>
     <div class="intro"><h1>A little <span>lighter.</span></h1><p>Smaller PNGs. Every pixel kept.</p></div>
@@ -27,7 +27,7 @@
         <div class="file-art" aria-hidden="true">
           <div class="art-card art-back"><span class="checker-art"></span></div>
           <div class="art-card art-middle"><span class="art-sun"></span><span class="art-hill"></span></div>
-          <div class="art-card art-front"><svg viewBox="0 0 100 76" fill="none"><defs><linearGradient id="sky" x2="0" y2="76" gradientUnits="userSpaceOnUse"><stop stop-color="#e8ede7"/><stop offset="1" stop-color="#f7ead2"/></linearGradient><linearGradient id="hill" x1="0" y1="35" x2="100" y2="76" gradientUnits="userSpaceOnUse"><stop stop-color="#9daa8c"/><stop offset="1" stop-color="#63795c"/></linearGradient></defs><rect width="100" height="76" rx="5" fill="url(#sky)"/><circle cx="70" cy="22" r="10" fill="#e6bd6b"/><path d="M0 56 27 28 58 65 79 45 100 66V76H0Z" fill="#bbc6ae"/><path d="m0 67 32-21 31 20 37-12v22H0Z" fill="url(#hill)"/></svg><span class="art-file-label">PNG<span>↘</span></span></div>
+          <div class="art-card art-front"><svg viewBox="0 0 100 76" fill="none"><defs><linearGradient id="sky" x2="0" y2="76" gradientUnits="userSpaceOnUse"><stop stop-color="#eee9f5"/><stop offset="1" stop-color="#f5edf1"/></linearGradient><linearGradient id="hill" x1="0" y1="35" x2="100" y2="76" gradientUnits="userSpaceOnUse"><stop stop-color="#baa5cd"/><stop offset="1" stop-color="#806596"/></linearGradient></defs><rect width="100" height="76" rx="5" fill="url(#sky)"/><circle cx="70" cy="22" r="10" fill="#d1b6df"/><path d="M0 56 27 28 58 65 79 45 100 66V76H0Z" fill="#d2c5dd"/><path d="m0 67 32-21 31 20 37-12v22H0Z" fill="url(#hill)"/></svg><span class="art-file-label">PNG<span>↘</span></span></div>
         </div>
         <div class="drop-copy"><h2>Drop your PNGs here</h2><p>A single image or a whole batch.</p></div>
         <button id="choose" class="primary"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5.5h4l1.5 2H16a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Z" stroke-linecap="round" stroke-linejoin="round"/></svg>Choose files</button>
@@ -52,7 +52,7 @@
   </main>
   <footer class="creator-footer"><span>Created by <a href="https://leolune.com" target="_blank" rel="noopener noreferrer">@leo</a></span><span id="install-option" hidden><span class="install-divider" aria-hidden="true">·</span><button id="install-app" class="install-link" type="button">Install app</button></span></footer>
   <dialog class="install-dialog" id="install-dialog" aria-labelledby="install-title" aria-describedby="install-instructions">
-    <h2 id="install-title">Keep Tuck close.</h2>
+    <h2 id="install-title">Keep PocketCompress close.</h2>
     <p id="install-instructions"></p>
     <p class="install-privacy">Offline compression is ready. This saves the app, never your images.</p>
     <form method="dialog"><button class="primary" type="submit">Got it</button></form>
