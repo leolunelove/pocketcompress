@@ -9,7 +9,7 @@ Drop, choose, or paste your images. Download them a little lighter.
 
 PNG only · Pixel-perfect · On your device
 
-[**Open PocketCompress ↗**](https://leolunelove.github.io/pocketcompress/)
+[**Open PocketCompress ↗**](https://pocketcompress.leolune.fun/)
 
 [Usage](#usage) · [Install](#install-and-use-offline) · [Privacy](#privacy) · [Quality and limits](#quality-and-limits) · [Development](#development)
 
