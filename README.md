@@ -1,6 +1,6 @@
 <div align="center">
 
-# PNG Tuck
+# PocketCompress
 
 **Less file, same image.**
 
@@ -9,7 +9,7 @@ Drop, choose, or paste your images. Download them a little lighter.
 
 PNG only · Pixel-perfect · On your device
 
-[**Open PNG Tuck ↗**](https://leolunelove.github.io/png-tuck/)
+[**Open PocketCompress ↗**](https://leolunelove.github.io/png-tuck/)
 
 [Usage](#usage) · [Install](#install-and-use-offline) · [Privacy](#privacy) · [Quality and limits](#quality-and-limits) · [Development](#development)
 
@@ -20,26 +20,26 @@ PNG only · Pixel-perfect · On your device
 ## Usage
 
 1. **Add your PNGs.** Drag them in, choose files, or paste with `⌘ V` on macOS or `Ctrl V` on Windows and Linux.
-2. **Let Tuck work.** Progress and results stay inside the drop area.
-3. **Download.** Save an individual PNG or the whole batch as `png-tuck.zip`.
+2. **Let PocketCompress work.** Progress and results stay inside the drop area.
+3. **Download.** Save an individual PNG or the whole batch as `pocketcompress.zip`.
 
 You can add more images to a batch, remove individual files, or clear everything and start again. No account, settings, or quality slider required.
 
 ## Privacy
 
-Your images are processed in your browser, on your device. PNG Tuck has no image-upload endpoint, database, or analytics.
+Your images are processed in your browser, on your device. PocketCompress has no image-upload endpoint, database, or analytics.
 
 Image data stays in memory while the page is open; the app does not save it to browser storage. Downloads are saved to your device when you request them.
 
 ## Install and use offline
 
-The discreet **Install app** link beside the creator credit appears once offline setup is ready. Supported browsers open their installation prompt; other browsers show brief instructions for adding Tuck to your home screen or Dock. The link disappears in the installed app.
+The discreet **Install app** link beside the creator credit appears once offline setup is ready. Supported browsers open their installation prompt; other browsers show brief instructions for adding PocketCompress to your home screen or Dock. The link disappears in the installed app.
 
 Load the app online once before using it offline. The page, ZIP library, and both compression and pixel-verification engines are cached locally. Your PNGs and compressed results are never cached or retained by the app. If your browser clears the app cache, open it online again to restore offline access.
 
 ## Quality and limits
 
-Tuck optimizes the PNG file without changing its decoded pixels. It preserves transparency and 16-bit detail, then checks the result against the original. If a result is larger or fails that check, it keeps the original.
+PocketCompress optimizes the PNG file without changing its decoded pixels. It preserves transparency and 16-bit detail, then checks the result against the original. If a result is larger or fails that check, it keeps the original.
 
 Already optimized PNGs may stay the same size.
 
