@@ -9,7 +9,7 @@ Drop, choose, or paste your images. Download them a little lighter.
 
 PNG only · Pixel-perfect · On your device
 
-[**Open PocketCompress ↗**](https://leolunelove.github.io/png-tuck/)
+[**Open PocketCompress ↗**](https://leolunelove.github.io/pocketcompress/)
 
 [Usage](#usage) · [Install](#install-and-use-offline) · [Privacy](#privacy) · [Quality and limits](#quality-and-limits) · [Development](#development)
 
@@ -68,7 +68,7 @@ Open [localhost:4173](http://localhost:4173). No build step or package installat
 ### Project layout
 
 ```text
-png-tuck/
+pocketcompress/
 ├── .github/workflows/pages.yml   # GitHub Pages deployment
 ├── dist/
 │   ├── index.html               # Page structure
