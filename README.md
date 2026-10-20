@@ -7,7 +7,7 @@
 A small, quiet tool for lossless PNG compression.  
 Drop, choose, or paste your images. Download them a little lighter.
 
-PNG only · Pixel-perfect · On your device
+Lossless PNG compression · Private image conversion · On your device
 
 [**Open PocketCompress ↗**](https://pocketcompress.leolune.fun/)
 
@@ -24,6 +24,14 @@ PNG only · Pixel-perfect · On your device
 3. **Download.** Save an individual PNG or the whole batch as `pocketcompress.zip`.
 
 You can add more images to a batch, remove individual files, or clear everything and start again. No account, settings, or quality slider required.
+
+## Convert to PNG
+
+Choose **Convert to PNG** above the same drop area to convert still JPG, WebP, AVIF and HEIC/HEIF photos. Compression remains the default. Paste, batches and downloads work in both modes, and switching modes keeps existing results.
+
+Conversion creates a standard 8-bit sRGB PNG without photo metadata. It does not restore lost detail or preserve HDR; PNGs can be larger than the original. HEIC collections use the primary photo; animations are not converted. Transparency is retained where the source format provides it.
+
+The HEIC decoder loads only when native decoding is unavailable. After its first online use it is cached for offline use on that device; it is not part of the initial app download. JPEG, WebP and AVIF use the browser decoder, so support depends on the browser.
 
 ## Privacy
 
@@ -45,7 +53,7 @@ Already optimized PNGs may stay the same size.
 
 | Limit | Supported |
 | :--- | :--- |
-| Format | Still PNG images; animated PNGs are not supported |
+| Format | Compression: still PNG. Conversion: JPG, WebP, AVIF and HEIC/HEIF still photos |
 | Image size | Up to 50 MiB per file |
 | Dimensions | Up to 24 million pixels per image |
 | Batch size | Up to 50 files, totaling 250 MiB |
@@ -91,7 +99,7 @@ Installation and offline setup require HTTPS or localhost. All app paths are rel
 
 ### Dependencies
 
-Compression uses OxiPNG, pixel verification uses a PNG decoder, and batch downloads use JSZip. These dependencies are bundled with the application; their licenses remain alongside the vendored code.
+HEIC fallback uses libheif-js 1.23.5 (LGPL-3.0); source and license references are included in `dist/vendor/heif/`. Compression uses OxiPNG, pixel verification uses a PNG decoder, and batch downloads use JSZip. These dependencies are bundled with the application; their licenses remain alongside the vendored code.
 
 </details>
 
