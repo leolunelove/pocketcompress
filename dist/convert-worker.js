@@ -1,3 +1,4 @@
+import { optimizePng } from './png-optimize.js';
 const MAX_PIXELS = 24_000_000;
 const decodeText = bytes => new TextDecoder().decode(bytes);
 function formatOf(buffer) {
@@ -60,8 +61,12 @@ self.onmessage=async({data:{buffer}})=>{
     }
     const blob=await canvas.convertToBlob({type:'image/png'});
     if(blob.type!=='image/png')throw new Error('Your browser could not create a PNG.');
-    const output=await blob.arrayBuffer();
-    self.postMessage({ok:true,buffer:output,width:canvas.width,height:canvas.height,primaryOnly},[output]);
+    let output=await blob.arrayBuffer(), optimizationSkipped=false;
+    self.postMessage({phase:'compressing'});
+    // Verify against the converted PNG, without another image conversion.
+    try { output=(await optimizePng(output)).buffer; }
+    catch { optimizationSkipped=true; }
+    self.postMessage({ok:true,buffer:output,width:canvas.width,height:canvas.height,primaryOnly,optimizationSkipped,convertedBytes:blob.size},[output]);
   }catch(error){self.postMessage({ok:false,error:error instanceof Error?error.message:'This image could not be converted. Your original is unchanged.'});}
   finally{bitmap?.close();}
 };

@@ -122,12 +122,15 @@ async function processNext(){
     clearTimeout(current.timer);worker.terminate();current=null;
     if(result.ok){
       item.status='done';item.blob=new Blob([result.buffer],{type:'image/png'});item.url=URL.createObjectURL(item.blob);
-      item.preview=URL.createObjectURL(item.operation==='convert'?item.blob:item.file);item.primaryOnly=result.primaryOnly;item.width=result.width;item.height=result.height;
+      item.preview=URL.createObjectURL(item.operation==='convert'?item.blob:item.file);item.primaryOnly=result.primaryOnly;item.optimizationSkipped=result.optimizationSkipped;item.width=result.width;item.height=result.height;
       item.outputName=item.operation==='convert'?item.file.name.replace(/\.[^.]+$/,'')+'.png':item.file.name.replace(/\.png$/i,'')+'-compressed.png';
     }else{item.status='error';item.error=result.error||'Compression failed. Please remove the file and try again.';}
     render();processNext();
   };
-  worker.onmessage=event=>finish(event.data);
+  worker.onmessage=event=>{
+    if(event.data.phase==='compressing'){item.phase='compressing';render();return;}
+    finish(event.data);
+  };
   worker.onerror=()=>finish({ok:false,error:'The compressor could not read this file. Your original is unchanged.'});
   current.timer=setTimeout(()=>finish({ok:false,error:'This image took too long to process. Try a smaller image.'}),120000);
   render();
@@ -147,9 +150,10 @@ function createRow(item) {
   return {row,thumb,detail,saving,control,remove,status:null};
 }
 function updateRow(view,item) {
-  if(view.status===item.status)return;
-  view.status=item.status;view.row.className=`file ${item.status}`;
-  view.detail.textContent=item.status==='queued'?'Waiting':item.status==='working'?(item.operation==='convert'?'Converting…':'Compressing…'):item.status==='error'?item.error:`${bytes(item.file.size)} → ${bytes(item.blob.size)}${item.primaryOnly?' · Primary photo':''}`;
+  const state=`${item.status}:${item.phase||''}`;
+  if(view.status===state)return;
+  view.status=state;view.row.className=`file ${item.status}`;
+  view.detail.textContent=item.status==='queued'?'Waiting':item.status==='working'?(item.operation==='convert'?(item.phase==='compressing'?'Compressing PNG…':'Converting…'):'Compressing…'):item.status==='error'?item.error:`${bytes(item.file.size)} → ${bytes(item.blob.size)}${item.primaryOnly?' · Primary photo':''}${item.optimizationSkipped?' · Compression unavailable':''}`;
   // Keep the remove control in place, including its keyboard focus.
   view.control.replaceChildren();
   if(item.status==='done'){

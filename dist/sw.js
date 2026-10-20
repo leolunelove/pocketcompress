@@ -1,11 +1,11 @@
 // Change this version whenever releasing new app files, to update them together.
-const VERSION = 'png-tuck-v8';
+const VERSION = 'png-tuck-v9';
 const BASE = self.registration.scope;
 const CACHE = `${VERSION}:${BASE}`;
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './pwa.js',
   './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
-  './compress-worker.js', './convert-worker.js', './vendor/jszip.min.js',
+  './png-optimize.js', './compress-worker.js', './convert-worker.js', './vendor/jszip.min.js',
   './vendor/oxipng/codec/pkg/squoosh_oxipng.js',
   './vendor/oxipng/codec/pkg/squoosh_oxipng_bg.wasm',
   './vendor/png/decode.js', './vendor/png/codec/pkg/squoosh_png.js',
