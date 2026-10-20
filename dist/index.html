@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f5f2">
-  <meta name="description" content="Losslessly compress PNGs without changing a single pixel. A simple, private image tool that works entirely on your device.">
+  <meta name="description" content="Compress PNGs or convert JPG, WebP, AVIF and HEIC photos to PNG. A simple, private image tool that works entirely on your device.">
   <title>PocketCompress — less file, same image</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <meta name="apple-mobile-web-app-title" content="PocketCompress">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23fff9e7'/%3E%3Cpath d='M0 7a7 7 0 0 1 7-7h18a7 7 0 0 1 7 7v3H0' fill='%23edbb34'/%3E%3Cpath d='M7 17h18M7 23h13' stroke='%23b6aa8c' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="./icons/icon-192.png">
   <link rel="stylesheet" href="./style.css">
   <script defer src="./vendor/jszip.min.js"></script>
-  <script type="module" src="./app.js?v=20261014"></script>
+  <script type="module" src="./app.js?v=20261020"></script>
   <script type="module" src="./pwa.js"></script>
 </head>
 <body>
@@ -19,7 +19,8 @@
     <a class="brand" href="./" aria-label="PocketCompress home"><span class="note-icon" aria-hidden="true"><i></i><i></i><i></i></span><span>PocketCompress</span></a>
   </header>
   <main>
-    <div class="intro"><h1>A little <span>lighter.</span></h1><p>Smaller PNGs. Every pixel kept.</p></div>
+    <div class="intro"><h1>A little <span>lighter.</span></h1><p id="intro-copy">Smaller PNGs. Every pixel kept.</p></div>
+    <div class="mode-switch" role="group" aria-label="Image tool"><button type="button" id="mode-compress" aria-pressed="true">Compress PNG</button><button type="button" id="mode-convert" aria-pressed="false">Convert to PNG</button></div>
     <div class="workspace">
     <section class="note" aria-label="Image compressor">
       <div class="dropzone" id="dropzone">
@@ -29,10 +30,10 @@
           <div class="art-card art-middle"><span class="art-sun"></span><span class="art-hill"></span></div>
           <div class="art-card art-front"><svg viewBox="0 0 100 76" fill="none"><defs><linearGradient id="sky" x2="0" y2="76" gradientUnits="userSpaceOnUse"><stop stop-color="#eee9f5"/><stop offset="1" stop-color="#f5edf1"/></linearGradient><linearGradient id="hill" x1="0" y1="35" x2="100" y2="76" gradientUnits="userSpaceOnUse"><stop stop-color="#baa5cd"/><stop offset="1" stop-color="#806596"/></linearGradient></defs><rect width="100" height="76" rx="5" fill="url(#sky)"/><circle cx="70" cy="22" r="10" fill="#d1b6df"/><path d="M0 56 27 28 58 65 79 45 100 66V76H0Z" fill="#d2c5dd"/><path d="m0 67 32-21 31 20 37-12v22H0Z" fill="url(#hill)"/></svg><span class="art-file-label">PNG<span>↘</span></span></div>
         </div>
-        <div class="drop-copy"><h2>Drop your PNGs here</h2><p>A single image or a whole batch.</p></div>
+        <div class="drop-copy"><h2 id="drop-title">Drop your PNGs here</h2><p>A single image or a whole batch.</p></div>
         <button id="choose" class="primary"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5.5h4l1.5 2H16a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Z" stroke-linecap="round" stroke-linejoin="round"/></svg>Choose files</button>
         <p class="paste-hint">or paste with <kbd id="paste-shortcut">⌘ V / Ctrl V</kbd></p>
-        <span class="drop-hint">PNG only · Up to 50 MB each</span>
+        <span class="drop-hint" id="format-hint">PNG only · Up to 50 MB each</span>
         </div>
         <input id="file-input" type="file" accept="image/png,.png" multiple hidden>
         <section class="results" id="results" aria-label="Your images" hidden>
@@ -45,7 +46,7 @@
         </section>
       </div>
       <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
-      <div class="note-footer"><span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m6.5 10 2.3 2.4 4.7-5" stroke-linecap="round" stroke-linejoin="round"/></svg>Always lossless</span><span class="footer-divider" aria-hidden="true"></span><span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="4" y="3.5" width="12" height="13" rx="2.5"/><path d="M4 9.8h12M10 3.5v13"/></svg>Transparency preserved</span></div>
+      <div class="note-footer"><span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m6.5 10 2.3 2.4 4.7-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="quality-label">Always lossless</span></span><span class="footer-divider" aria-hidden="true"></span><span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="4" y="3.5" width="12" height="13" rx="2.5"/><path d="M4 9.8h12M10 3.5v13"/></svg><span id="secondary-label">Transparency preserved</span></span></div>
     </section>
     </div>
     <p class="page-footer"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="5.5" y="8" width="9" height="8" rx="2"/><path d="M7.5 8V5.5a2.5 2.5 0 0 1 5 0V8"/></svg><span>Private by default. Your images never leave this tab.</span></p>

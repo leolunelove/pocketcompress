@@ -2,7 +2,7 @@
   "id": "./",
   "name": "PocketCompress",
   "short_name": "PocketCompress",
-  "description": "Lossless PNG compression, on your device and offline.",
+  "description": "Lossless PNG compression and private photo-to-PNG conversion.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",

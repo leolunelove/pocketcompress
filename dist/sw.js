@@ -1,17 +1,18 @@
 // Change this version whenever releasing new app files, to update them together.
-const VERSION = 'png-tuck-v5';
+const VERSION = 'png-tuck-v8';
 const BASE = self.registration.scope;
 const CACHE = `${VERSION}:${BASE}`;
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './pwa.js',
   './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
-  './compress-worker.js', './vendor/jszip.min.js',
+  './compress-worker.js', './convert-worker.js', './vendor/jszip.min.js',
   './vendor/oxipng/codec/pkg/squoosh_oxipng.js',
   './vendor/oxipng/codec/pkg/squoosh_oxipng_bg.wasm',
   './vendor/png/decode.js', './vendor/png/codec/pkg/squoosh_png.js',
   './vendor/png/codec/pkg/squoosh_png_bg.wasm'
 ].map(path => new URL(path, BASE).href);
-const allowed = new Set(ASSETS);
+const OPTIONAL = [new URL('./vendor/heif/libheif-bundle.mjs', BASE).href];
+const allowed = new Set([...ASSETS, ...OPTIONAL]);
 
 async function prepareOffline() {
   const cache = await caches.open(CACHE);
@@ -54,6 +55,10 @@ self.addEventListener('fetch', event => {
   // Only these application assets are cached. Image files and blobs never are.
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    return await cache.match(url.href) || fetch(event.request);
+    const cached=await cache.match(url.href);
+    if(cached)return cached;
+    const response=await fetch(event.request);
+    if(response.ok && OPTIONAL.includes(url.href))await cache.put(url.href,response.clone());
+    return response;
   })());
 });

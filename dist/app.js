@@ -3,7 +3,25 @@ const input = $('#file-input'), drop = $('#dropzone'), list = $('#file-list');
 const appleDevice=/Mac|iPhone|iPad/.test(navigator.userAgentData?.platform||navigator.platform);
 $('#paste-shortcut').textContent=appleDevice?'⌘ V':'Ctrl V';
 const items = [];
-let current = null, serial = 0;
+let current = null, serial = 0, toolMode = 'compress';
+function setMode(mode) {
+  toolMode=mode;
+  const convert=mode==='convert';
+  $('#mode-compress').setAttribute('aria-pressed',String(!convert));
+  $('#mode-convert').setAttribute('aria-pressed',String(convert));
+  $('#drop-title').textContent=convert?'Drop your images here':'Drop your PNGs here';
+  drop.dataset.prompt=convert?'Drop to convert to PNG.':'Drop your PNGs here.';
+  $('#format-hint').textContent=convert?'JPG · WebP · AVIF · HEIC · Up to 50 MB':'PNG only · Up to 50 MB each';
+  $('#intro-copy').textContent=convert?'Your photos, now PNGs. Still on your device.':'Smaller PNGs. Every pixel kept.';
+  $('#quality-label').textContent=convert?'PNG may be larger':'Always lossless';
+  $('#secondary-label').textContent=convert?'Photo metadata removed':'Transparency preserved';
+  $('#add-more').lastChild.textContent=convert?' Add images':' Add PNGs';
+  input.accept=convert?'image/jpeg,image/webp,image/avif,image/heic,image/heif,.jpg,.jpeg,.webp,.avif,.heic,.heif':'image/png,.png';
+  notify('');
+}
+$('#mode-compress').addEventListener('click',()=>setMode('compress'));
+$('#mode-convert').addEventListener('click',()=>setMode('convert'));
+setMode('compress');
 const MAX_BYTES = 50 * 1024 * 1024;
 const icons = {
   download:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 14v3h12v-3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -67,10 +85,11 @@ function addFiles(files) {
   notify('');
   const skipped=[];
   for(const file of files){
-    if(file.type!=='image/png'&&!/\.png$/i.test(file.name)){skipped.push(`${file.name}: please choose a PNG.`);continue;}
+    if(toolMode==='compress' && file.type!=='image/png'&&!/\.png$/i.test(file.name)){skipped.push(`${file.name}: choose a PNG, or switch to Convert to PNG.`);continue;}
+    if(toolMode==='convert' && !/^image\/(jpeg|webp|avif|heic|heif)$/.test(file.type) && !/\.(jpe?g|webp|avif|heic|heif)$/i.test(file.name)){skipped.push(`${file.name}: choose a JPG, WebP, AVIF or HEIC photo.`);continue;}
     if(file.size>MAX_BYTES){skipped.push(`${file.name}: exceeds the 50 MB limit.`);continue;}
     if(items.length>=50 || items.reduce((s,i)=>s+i.file.size,0)+file.size>250*1024*1024){skipped.push('This batch is full. Download and clear it before adding more images.');break;}
-    const item={id:++serial,file,status:'queued',url:null,preview:null};
+    const item={id:++serial,file,operation:toolMode,status:'queued',url:null,preview:null};
     items.push(item);
   }
   if(skipped.length)notify(skipped.join(' '));
@@ -95,7 +114,7 @@ async function processNext(){
   const item=items.find(i=>i.status==='queued');if(!item)return;
   item.status='working';
   let worker;
-  try { worker=new Worker(new URL('./compress-worker.js',import.meta.url),{type:'module'}); }
+  try { worker=new Worker(new URL(item.operation==='convert'?'./convert-worker.js':'./compress-worker.js',import.meta.url),{type:'module'}); }
   catch {item.status='error';item.error='This browser cannot start the compressor. Try a current browser.';render();processNext();return;}
   current={item,worker,timer:null};
   const finish=result=>{
@@ -103,8 +122,8 @@ async function processNext(){
     clearTimeout(current.timer);worker.terminate();current=null;
     if(result.ok){
       item.status='done';item.blob=new Blob([result.buffer],{type:'image/png'});item.url=URL.createObjectURL(item.blob);
-      item.preview=URL.createObjectURL(item.file);item.width=result.width;item.height=result.height;
-      item.outputName=item.file.name.replace(/\.png$/i,'')+'-compressed.png';
+      item.preview=URL.createObjectURL(item.operation==='convert'?item.blob:item.file);item.primaryOnly=result.primaryOnly;item.width=result.width;item.height=result.height;
+      item.outputName=item.operation==='convert'?item.file.name.replace(/\.[^.]+$/,'')+'.png':item.file.name.replace(/\.png$/i,'')+'-compressed.png';
     }else{item.status='error';item.error=result.error||'Compression failed. Please remove the file and try again.';}
     render();processNext();
   };
@@ -130,13 +149,13 @@ function createRow(item) {
 function updateRow(view,item) {
   if(view.status===item.status)return;
   view.status=item.status;view.row.className=`file ${item.status}`;
-  view.detail.textContent=item.status==='queued'?'Waiting':item.status==='working'?'Compressing…':item.status==='error'?item.error:`${bytes(item.file.size)} → ${bytes(item.blob.size)}`;
+  view.detail.textContent=item.status==='queued'?'Waiting':item.status==='working'?(item.operation==='convert'?'Converting…':'Compressing…'):item.status==='error'?item.error:`${bytes(item.file.size)} → ${bytes(item.blob.size)}${item.primaryOnly?' · Primary photo':''}`;
   // Keep the remove control in place, including its keyboard focus.
   view.control.replaceChildren();
   if(item.status==='done'){
     const percent=(1-item.blob.size/item.file.size)*100;
     view.saving.className=`saving${percent<=0?' neutral':''}`;
-    view.saving.textContent=percent>0?`−${Math.min(percent,99.9).toFixed(1)}%`:percent<0?`+${Math.abs(percent).toFixed(1)}%`:'Optimized';
+    view.saving.textContent=item.operation==='convert'?'PNG ready':percent>0?`−${Math.min(percent,99.9).toFixed(1)}%`:percent<0?`+${Math.abs(percent).toFixed(1)}%`:'Optimized';
     view.saving.hidden=false;
     const link=make('a','icon-button');link.href=item.url;link.download=item.outputName;link.innerHTML=icons.download;link.title=`Download ${item.outputName}`;link.setAttribute('aria-label',link.title);
     view.control.append(link);
@@ -166,7 +185,7 @@ function render(){
   const done=items.filter(i=>i.status==='done'),pending=items.filter(i=>i.status==='working'||i.status==='queued');
   results.dataset.state=pending.length?'processing':done.length?'ready':'error';
   const original=done.reduce((s,i)=>s+i.file.size,0),output=done.reduce((s,i)=>s+i.blob.size,0),saved=original-output;
-  $('#summary').textContent=pending.length?`Processing ${pending.length} ${pending.length===1?'image':'images'}…`:done.length?`${done.length} ${done.length===1?'image':'images'} ready${saved>0?` · ${bytes(saved)} saved`:' · Already optimized.'}`:'Your original files are unchanged.';
+  $('#summary').textContent=pending.length?`Processing ${pending.length} ${pending.length===1?'image':'images'}…`:done.length?`${done.length} ${done.length===1?'image':'images'} ready${done.every(i=>i.operation==='compress')?(saved>0?` · ${bytes(saved)} saved`:' · Already optimized.'):''}`:'Your original files are unchanged.';
   const ids=new Set(items.map(item=>item.id)), arrivals=[];
   for(const [id,view] of rows){if(!ids.has(id)){view.row.remove();rows.delete(id);}}
   for(const item of items){

@@ -42,7 +42,7 @@ h1 span { color: #9b82b6; }
 .dropzone { position: relative; flex: 1; min-block-size: 0; min-inline-size: 0; overflow: hidden; display: grid; grid-template-rows: minmax(0, 1fr); padding: clamp(.75rem, 2dvh, 1.5rem) clamp(.75rem, 3vw, 2rem); margin: clamp(.4rem, 1vw, .75rem); border: .0625rem solid transparent; border-radius: calc(var(--radius) * .75); transition: background .3s, border-color .3s; }
 .empty-state { container-type: size; min-block-size: 0; overflow: auto; scrollbar-width: thin; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: .65rem; }
 .dropzone.dragging { background: #f6f0fc; border-color: #b89acf; }
-.dropzone::after { content: 'Drop your PNGs here.'; position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 2rem; background: #f6effcf2; border: .0625rem dashed #b89acf; border-radius: inherit; color: #655184; font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 550; letter-spacing: -.03em; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .18s; }
+.dropzone::after { content: attr(data-prompt); position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 2rem; background: #f6effcf2; border: .0625rem dashed #b89acf; border-radius: inherit; color: #655184; font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 550; letter-spacing: -.03em; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .18s; }
 .dropzone.dragging::after { opacity: 1; visibility: visible; }
 .file-art { position: relative; flex: 0 0 auto; inline-size: 10rem; block-size: 5.9rem; margin-block: .1rem .3rem; }
 .art-card { position: absolute; inline-size: 5.7rem; block-size: 5.1rem; background: #fff; border: .0625rem solid #e5e2d9; border-radius: .65rem; box-shadow: 0 .125rem .2rem #54452f06, 0 .5rem 1rem -.3rem #54452f18; transition: transform .5s var(--ease), box-shadow .5s var(--ease); overflow: hidden; }
@@ -169,3 +169,11 @@ kbd { display: inline-grid; place-items: center; font: inherit; font-size: .95em
 .note-icon i { display: none; }
 .note-icon::before { content: ""; position: absolute; inset: .38em .3em .3em; border: .075em solid #72528d; border-radius: .16em; background: linear-gradient(145deg, transparent 55%, #ad90c6 56%); }
 .note-icon::after { content: ""; position: absolute; inset: 0 0 auto auto; inline-size: .58em; block-size: .58em; background: linear-gradient(45deg, #b99ad3 49%, #f7f5f2 51%); border-radius: 0 0 0 .12em; }
+
+/* One workspace, two quiet tools. */
+.mode-switch { flex: 0 0 auto; display: inline-flex; gap: .15rem; padding: .22rem; border-radius: .8rem; background: #ede8f1; border: .0625rem solid #e5deec; }
+.mode-switch button { border: 0; border-radius: .6rem; padding: .65em 1em; min-block-size: 2.65rem; font-size: var(--small-size); font-weight: 550; color: #7b6f87; background: transparent; white-space: nowrap; }
+.mode-switch button[aria-pressed="true"] { background: #fff; color: #49365e; box-shadow: 0 .1rem .3rem #49365e12; }
+.mode-switch button:hover { color: #49365e; }
+@media (max-height: 44rem) { main { gap: .65rem; } .mode-switch button { padding-block: .5em; } }
+@media (max-height: 36rem) { .mode-switch { padding: .15rem; } .mode-switch button { min-block-size: 2.4rem; } .workspace { min-block-size: 11rem; } }
