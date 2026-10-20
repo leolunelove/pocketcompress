@@ -29,7 +29,7 @@ You can add more images to a batch, remove individual files, or clear everything
 
 Choose **Convert to PNG** above the same drop area to convert still JPG, WebP, AVIF and HEIC/HEIF photos. Compression remains the default. Paste, batches and downloads work in both modes, and switching modes keeps existing results.
 
-Conversion creates a standard 8-bit sRGB PNG without photo metadata. It does not restore lost detail or preserve HDR; PNGs can be larger than the original. HEIC collections use the primary photo; animations are not converted. Transparency is retained where the source format provides it.
+Conversion creates a standard 8-bit sRGB PNG without photo metadata, then automatically applies lossless PNG optimization. It keeps the optimized file only when smaller and pixel-equivalent to the converted PNG. If optimization fails, the converted PNG remains available. It does not restore lost detail or preserve HDR; PNGs can be larger than the original. HEIC collections use the primary photo; animations are not converted. Transparency is retained where the source format provides it.
 
 The HEIC decoder loads only when native decoding is unavailable. After its first online use it is cached for offline use on that device; it is not part of the initial app download. JPEG, WebP and AVIF use the browser decoder, so support depends on the browser.
 
