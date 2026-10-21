@@ -122,7 +122,7 @@ async function processNext(){
     clearTimeout(current.timer);worker.terminate();current=null;
     if(result.ok){
       item.status='done';item.blob=new Blob([result.buffer],{type:'image/png'});item.url=URL.createObjectURL(item.blob);
-      item.preview=URL.createObjectURL(item.operation==='convert'?item.blob:item.file);item.primaryOnly=result.primaryOnly;item.optimizationSkipped=result.optimizationSkipped;item.width=result.width;item.height=result.height;
+      item.preview=URL.createObjectURL(item.operation==='convert'?item.blob:item.file);item.primaryOnly=result.primaryOnly;item.optimizationSkipped=result.optimizationSkipped;item.convertedBytes=result.convertedBytes;item.width=result.width;item.height=result.height;
       item.outputName=item.operation==='convert'?item.file.name.replace(/\.[^.]+$/,'')+'.png':item.file.name.replace(/\.png$/i,'')+'-compressed.png';
     }else{item.status='error';item.error=result.error||'Compression failed. Please remove the file and try again.';}
     render();processNext();
@@ -159,7 +159,10 @@ function updateRow(view,item) {
   if(item.status==='done'){
     const percent=(1-item.blob.size/item.file.size)*100;
     view.saving.className=`saving${percent<=0?' neutral':''}`;
-    view.saving.textContent=item.operation==='convert'?'PNG ready':percent>0?`−${Math.min(percent,99.9).toFixed(1)}%`:percent<0?`+${Math.abs(percent).toFixed(1)}%`:'Optimized';
+    const extraSaved=item.operation==='convert'&&!item.optimizationSkipped&&Number.isFinite(item.convertedBytes)?Math.max(0,item.convertedBytes-item.blob.size):0;
+    if(extraSaved>0)view.saving.className='saving extra-saving';
+    view.saving.title=extraSaved>0?`PNG before compression: ${bytes(item.convertedBytes)} → ${bytes(item.blob.size)}`:'';
+    view.saving.textContent=item.operation==='convert'?(extraSaved>0?`${bytes(extraSaved)} saved after conversion`:'PNG ready'):percent>0?`−${Math.min(percent,99.9).toFixed(1)}%`:percent<0?`+${Math.abs(percent).toFixed(1)}%`:'Optimized';
     view.saving.hidden=false;
     const link=make('a','icon-button');link.href=item.url;link.download=item.outputName;link.innerHTML=icons.download;link.title=`Download ${item.outputName}`;link.setAttribute('aria-label',link.title);
     view.control.append(link);

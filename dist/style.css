@@ -177,3 +177,5 @@ kbd { display: inline-grid; place-items: center; font: inherit; font-size: .95em
 .mode-switch button:hover { color: #49365e; }
 @media (max-height: 44rem) { main { gap: .65rem; } .mode-switch button { padding-block: .5em; } }
 @media (max-height: 36rem) { .mode-switch { padding: .15rem; } .mode-switch button { min-block-size: 2.4rem; } .workspace { min-block-size: 11rem; } }
+
+.saving.extra-saving { padding: 0; background: transparent; color: #82788b; font-weight: 400; }
