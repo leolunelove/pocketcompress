@@ -1,5 +1,5 @@
 // Change this version whenever releasing new app files, to update them together.
-const VERSION = 'png-tuck-v10';
+const VERSION = 'png-tuck-v13';
 const BASE = self.registration.scope;
 const CACHE = `${VERSION}:${BASE}`;
 const ASSETS = [

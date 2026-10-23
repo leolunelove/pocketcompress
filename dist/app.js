@@ -149,17 +149,28 @@ function createRow(item) {
   row.append(thumb,info,actions);list.append(row);
   return {row,thumb,detail,saving,control,remove,status:null};
 }
+function extraPngSaved(item) {
+  return item.operation==='convert'&&!item.optimizationSkipped&&Number.isFinite(item.convertedBytes)?Math.max(0,item.convertedBytes-item.blob.size):0;
+}
 function updateRow(view,item) {
   const state=`${item.status}:${item.phase||''}`;
   if(view.status===state)return;
   view.status=state;view.row.className=`file ${item.status}`;
   view.detail.textContent=item.status==='queued'?'Waiting':item.status==='working'?(item.operation==='convert'?(item.phase==='compressing'?'Compressing PNG…':'Converting…'):'Compressing…'):item.status==='error'?item.error:`${bytes(item.file.size)} → ${bytes(item.blob.size)}${item.primaryOnly?' · Primary photo':''}${item.optimizationSkipped?' · Compression unavailable':''}`;
+  if(item.status==='done') {
+    const source=make('span','source-size',bytes(item.file.size));
+    const arrow=make('span','size-arrow','→');arrow.setAttribute('aria-label','to');
+    const output=make('span','output-size',bytes(item.blob.size));
+    view.detail.replaceChildren(source,document.createTextNode(' '),arrow,document.createTextNode(' '),output);
+    if(item.primaryOnly)view.detail.append(make('span','file-note',' · Primary photo'));
+    if(item.optimizationSkipped)view.detail.append(make('span','file-note',' · Compression unavailable'));
+  }
   // Keep the remove control in place, including its keyboard focus.
   view.control.replaceChildren();
   if(item.status==='done'){
     const percent=(1-item.blob.size/item.file.size)*100;
     view.saving.className=`saving${percent<=0?' neutral':''}`;
-    const extraSaved=item.operation==='convert'&&!item.optimizationSkipped&&Number.isFinite(item.convertedBytes)?Math.max(0,item.convertedBytes-item.blob.size):0;
+    const extraSaved=extraPngSaved(item);
     if(extraSaved>0)view.saving.className='saving extra-saving';
     view.saving.title=extraSaved>0?`PNG before compression: ${bytes(item.convertedBytes)} → ${bytes(item.blob.size)}`:'';
     view.saving.textContent=item.operation==='convert'?(extraSaved>0?`${bytes(extraSaved)} saved after conversion`:'PNG ready'):percent>0?`−${Math.min(percent,99.9).toFixed(1)}%`:percent<0?`+${Math.abs(percent).toFixed(1)}%`:'Optimized';
@@ -191,8 +202,14 @@ function render(){
   $('#count').textContent=String(items.length);
   const done=items.filter(i=>i.status==='done'),pending=items.filter(i=>i.status==='working'||i.status==='queued');
   results.dataset.state=pending.length?'processing':done.length?'ready':'error';
-  const original=done.reduce((s,i)=>s+i.file.size,0),output=done.reduce((s,i)=>s+i.blob.size,0),saved=original-output;
-  $('#summary').textContent=pending.length?`Processing ${pending.length} ${pending.length===1?'image':'images'}…`:done.length?`${done.length} ${done.length===1?'image':'images'} ready${done.every(i=>i.operation==='compress')?(saved>0?` · ${bytes(saved)} saved`:' · Already optimized.'):''}`:'Your original files are unchanged.';
+  const allCompressed=done.every(i=>i.operation==='compress');
+  const allConverted=done.every(i=>i.operation==='convert');
+  const saved=done.reduce((sum,item)=>sum+(item.operation==='convert'?extraPngSaved(item):Math.max(0,item.file.size-item.blob.size)),0);
+  $('#summary').textContent=pending.length?`Processing ${pending.length} ${pending.length===1?'image':'images'}…`:done.length?`${done.length} ${done.length===1?'image':'images'} ready`:'Your original files are unchanged.';
+  const totalLabel=allCompressed?'saved':allConverted?'saved after conversion':'saved by PNG compression';
+  const batchSaving=$('#batch-saving');
+  batchSaving.hidden=!!pending.length||done.length<2||saved<=0;
+  batchSaving.textContent=saved>0?`↘ ${bytes(saved)} ${totalLabel}`:'';
   const ids=new Set(items.map(item=>item.id)), arrivals=[];
   for(const [id,view] of rows){if(!ids.has(id)){view.row.remove();rows.delete(id);}}
   for(const item of items){

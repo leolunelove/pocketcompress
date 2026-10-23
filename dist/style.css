@@ -179,3 +179,40 @@ kbd { display: inline-grid; place-items: center; font: inherit; font-size: .95em
 @media (max-height: 36rem) { .mode-switch { padding: .15rem; } .mode-switch button { min-block-size: 2.4rem; } .workspace { min-block-size: 11rem; } }
 
 .saving.extra-saving { padding: 0; background: transparent; color: #82788b; font-weight: 400; }
+
+/* A quiet receipt for the batch; clearer hierarchy within each file. */
+.results { gap: .9rem; }
+.results-heading { gap: .3rem; padding-block: .35rem .25rem; }
+.results-heading h2 { font-size: clamp(1.1rem, 1rem + .3vw, 1.3rem); letter-spacing: -.04em; }
+.results-heading h2 span { background: #f2eef6; color: #786387; font-size: .7em; min-inline-size: 1.55em; padding: .2em .3em; }
+.results[data-state="ready"] .results-heading #summary { color: #7c7184; }
+.results-heading .batch-saving { margin-block-start: .3rem; padding: .38em .8em; border-radius: 2rem; background: #f3eef8; color: #806492; font-size: var(--small-size); font-weight: 500; letter-spacing: -.015em; }
+#file-list { border: 0; padding-inline: .15rem; }
+.file { min-block-size: 5.7rem; padding: .85rem .35rem; border-radius: .8rem; }
+.file + .file { border-block-start-color: #f0ecf3; }
+.file-name { color: #39313f; font-weight: 550; }
+.file-detail { margin-block: .3rem .25rem; font-size: var(--small-size); color: #aba2b2; }
+.source-size { color: #7d7384; }
+.size-arrow { color: #c3b9cb; margin-inline: .3em; }
+.output-size { color: #72617f; font-weight: 550; }
+.file-note { color: #807087; font-size: .92em; }
+.saving.extra-saving { color: #826b8e; font-size: clamp(.6875rem,.65rem + .13vw,.75rem); letter-spacing: -.01em; }
+.file-actions { gap: .2rem; }
+.file-actions .icon-button:not(.remove) { background: #eee5f6; color: #88659f; box-shadow: inset 0 .0625rem 0 #fff8; border-radius: .8rem; }
+.file-actions .icon-button:not(.remove):hover { background: #e6d9f0; transform: translateY(-.1rem); }
+.file-actions .remove { color: #c0b5c9; }
+.results-footer { padding-block-start: .25rem; }
+@media (max-width: 30rem) { .results { gap: .5rem; } .file { padding-inline: .05rem; } .file-note { display: block; } .size-arrow { margin-inline: .12em; } .results-heading .batch-saving { max-inline-size: 100%; text-wrap: balance; } }
+
+.has-images .workspace { flex-basis: 26rem; }
+.results-heading { flex-direction: row; flex-wrap: wrap; gap: .35rem .65rem; }
+.results-heading h2 { flex-basis: 100%; }
+.results-heading #batch-saving { margin: 0; color: #806492; }
+.file { min-block-size: 4.8rem; padding-block: .6rem; }
+@media (max-width: 30rem) { .results-heading { gap: .3rem .5rem; } .results-heading #summary { flex-basis: 100%; } }
+
+/* Give completed files the space previously occupied by the empty illustration. */
+.has-images main { gap: clamp(.55rem, 1.5dvh, 1rem); }
+.has-images .dropzone { margin-block: .4rem; padding-block: .65rem; }
+.has-images .workspace { flex-basis: 28rem; }
+.has-images .results { gap: .65rem; }
